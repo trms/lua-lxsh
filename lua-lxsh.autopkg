@@ -1,0 +1,56 @@
+nuget {
+	nuspec {
+		id = lua-lxsh;
+		title: lxsh;
+		version: 0.8.7.1;
+		authors: {coapp, Peter Odding, Andrew Starks, Tightrope Media Systems};
+		owners: {Peter Odding};
+
+		licenseUrl: "http://opensource.org/licenses/MIT";
+		projectUrl: "http://stevedonovan.github.com/Penlight";
+		copyright: "(C) 2011 Peter Odding <peter@peterodding.com>.";
+		
+		requireLicenseAcceptance: false;
+		summary: "Lexing & Syntax Highlighting in Lua";
+		releaseNotes: "None."; 
+
+		description: {@"LXSH is a collection of lexers and syntax highlighters written in Lua using the excellent pattern-matching library LPeg. Several syntaxes are currently supported: Lua, C, BibTeX and shell script. The syntax highlighters support three output formats: HTML designed to be easily embedded in web pages, LaTeX which can be used to generate high quality PDF files and RTF which can be used in graphical text editors like Microsoft Word and LibreOffice (formerly OpenOffice). Three predefined color schemes are included."};
+		tags: {native, Lua, module};
+	};
+
+	dependencies {
+        // This node defines any outside items which may be needed to consume this package.
+        packages : {
+            // This is a list of other NuGet packages required to use this package.
+            // Each item follows the format "<pkg_name>/<version>"
+            lua/"[5.1, 5.4)",
+            lpeg/"[0.09, 0.14)",
+
+        };
+    };
+
+	files {
+		// declare a lua collection
+		lua : {
+			// copies the whole folder tree.
+			#add-all-files : Items.lua-lxsh_Files;
+			// set the destination in the package itself. 
+			#destination : ${build_root}\lxsh\;
+		};
+
+		lua : {".\src\**\*"};
+
+    };
+	targets {
+		AfterBuild {
+			.Copy {
+				SourceFiles = "@(lua-lxsh_Files)";
+				DestinationFiles = "@(lua-lxsh_Files->'$(TargetDir)lxsh\\%(RecursiveDir)%(Filename)%(Extension)')";
+				SkipUnchangedFiles = true;
+				UseHardlinksIfPossible = true;
+			};
+
+		};
+
+	}
+}
